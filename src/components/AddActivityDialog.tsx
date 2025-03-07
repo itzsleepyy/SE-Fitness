@@ -3,6 +3,7 @@ import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '
 import { Button } from './ui/button';
 import { createActivity } from '@/lib/api';
 import type { Activity, ActivityType, MealType } from '@/lib/types';
+import groupService from '../services/addActivityService';
 
 interface AddActivityDialogProps {
   open: boolean;
@@ -10,37 +11,11 @@ interface AddActivityDialogProps {
   onActivityAdded: (activity: Activity) => void;
 }
 
-const EXERCISE_TYPES: ActivityType[] = [
-  'Run',
-  'Cycle',
-  'Swim',
-  'Walk',
-  'Strength Training',
-  'Yoga',
-  'HIIT',
-  'Custom'
-];
-
-const MEAL_TYPES: MealType[] = [
-  'Breakfast',
-  'Lunch',
-  'Dinner',
-  'Snack',
-  'Custom'
-];
-
-const COMMON_FOOD_TYPES = [
-  'Fruits',
-  'Vegetables',
-  'Grains',
-  'Protein',
-  'Dairy',
-  'Beverages',
-  'Snacks',
-  'Custom'
-];
-
 export function AddActivityDialog({ open, onClose, onActivityAdded }: AddActivityDialogProps) {
+  const GroupService = new groupService()
+  const COMMON_FOOD_TYPES = GroupService.getCommonFoodTypes;
+  const EXERCISE_TYPES = GroupService.getExerciseTypes;
+  const MEAL_TYPES = GroupService.getMealTypes
   const [formData, setFormData] = useState({
     type: 'exercise',
     activityType: 'Run' as ActivityType,
@@ -94,6 +69,7 @@ export function AddActivityDialog({ open, onClose, onActivityAdded }: AddActivit
       });
     } catch (err) {
       setError('Failed to create activity. Please try again.');
+      console.log(err);
     } finally {
       setLoading(false);
     }
